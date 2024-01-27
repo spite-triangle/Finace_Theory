@@ -1,5 +1,6 @@
 # Risk and Return
 
+
 # 定义
 
 概念符号
@@ -37,3 +38,15 @@
     $$
     \mathsf{Corr}[R_{it},R_{jt}]~=~\frac{\mathsf{E}[(R_{it}-\mu_{i})(R_{jt}-\mu_{j})]}{\sigma_{i}\sigma_{j}}
     $$
+
+# 有效市场
+
+股票价格在有效市场 (`Efficient Market`) 中的特点
+- 价格随机、不可预测
+- 价格能实时且准确跟随行情变化
+- 投资者不能从风险调整中获取收益
+
+# 公理
+
+> [!note]
+> 风险越大，收益越大
