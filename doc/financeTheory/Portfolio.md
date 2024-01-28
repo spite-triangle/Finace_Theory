@@ -152,12 +152,12 @@ $$
 ![curver](image/MeanVarianceCurver.jpg)
 
 > [!tip]
-> 综合以上三点，**国债和任意一种组合投资的最优组合方式应当是两条曲线的切线，投资组合内部最优的权值分配应当是切线点**
+> 综合以上三点，**国债和任意一种组合投资的最优组合方式应当是两条曲线的切线，投资组合内部最优的权值分配应当是切线点 `Tangency Portfolio`，也被称之为`Efficient Portfolio`**
 
 ![beast](image/Portfolio_beast.jpg)
 
 
-这条切线的斜率就被称之为夏普比率`Sharpe Ratio`，用于衡量组合投资的好坏。该切线上所有国债与切线点投资组合构成的投资组合被称之为 `Tangency Portfolio`
+这条切线为资本市场线`Capital Market Line`；其斜率被称之为夏普比率`Sharpe Ratio`，用于衡量组合投资的好坏。
 
 $$
 \frac{\mathsf{E}[R_p] - r_f}{\sigma_p} 
@@ -165,10 +165,12 @@ $$
 
 # 资本资产定价模型
 
+## 市场投资组合
+
 当想要投资证券组合形式为：国债 + 组合投资，那么组合投资的最优组合就是有效边界的切点。假设这样的投资组合是 M，那么所有想投资国债 + 组合投资的人，肯定都想要自己的投资组合是 M。又假设全世界的人都只投资「国债 + M」，那么全世界的证券总价值等于国债 + M，**因此 M 只能是全世界所有股票的投资总和，且每种股票的 $\omega_i$ 就等于该类股票价值占总股票价值的百分比，该投资组合就被称之为「市场投资组合 `Market Portfolio`」** 。基于市场投资组合的观点，诞生了 `Russell 2000` 与 `S&P 500` 类型的股票。
 
 
-根据市场投资组合理论对切线投资组合 `Tangency Portfolio` 的回报进行重定义：无风险收益和投资组合风险收益之和，其中投资组合风险收益是市场投资组合风险收益与系数的乘积：
+根据市场投资组合理论，切线上线所有国债 + 组合投资（投资组合是切点）的回报为：无风险收益和投资组合风险收益之和，其中投资组合风险收益是市场投资组合风险收益与系数的乘积
 
 $$
 \mathsf{E} [R_p] = R_f + \frac{\sigma_p}{\sigma_m} (\mathsf{E} [R_m] - R_f)
@@ -177,7 +179,12 @@ $$
 - $\sigma_m$ 市场投资组合的均方差
 - $\mathsf{E} [R_m]$ 市场投资组合的回报
 
-**但是该定价模型只适用于切线投资组合的计算** 。对该模型进行修正，让其适用所有的投资组合
+**这个也是资本市场线`Capital Market Line`，只适用于切线上的计算** 。
+
+
+## 证券市场线
+
+对该模型进行修正，让其适用所有的**证券**
 
 $$
 \begin{aligned}
@@ -186,8 +193,77 @@ $$
 \end{aligned}
 $$
 
+- $\beta_i = 1$ : 最终收益同 $\mathsf{E} [R_m]$ 相等
+- $\beta_i = 0$ : 最终只有无风险收益
+- $\beta_i < 0$ : 除做空外，很难得到负数值的 $\beta_i$，唯一能接近负数的只有黄金股票
 
-该模型就是 「资本资产定价模型 `Capital Asset Pricing Model, CAPM`」
+
+这条线是证券市场线`Security Market Line`, 且该模型就是「资本资产定价模型 `Capital Asset Pricing Model, CAPM`」
 
 > [!note]
 > **利用该模型，就能为净现值计算贴现率**
+
+再将其拓展到所有的投资组合
+
+$$
+\begin{aligned}
+    R_p &= \sum_{k=1}^n \omega_kR_k \\
+    \mathsf{Cov} [R_p, R_m] &= \mathsf{Cov}[\sum_{k=1}^n \omega_kR_k, R_m ] \\
+                            &= \sum_{k=1}^n \omega_k \mathsf{Cov} [R_k, R_m] \\
+    \beta_p &= \frac{\mathsf{Cov}[R_p,R_m]}{\mathsf{Var} [R_m]} \\
+            &= \frac{\sum_{k=1}^n \omega_k \mathsf{Cov} [R_k, R_m]}{\mathsf{Var} [R_m]}  \\
+            &= \sum_{k=1}^n \omega_k \frac{\mathsf{Cov} [R_k, R_m]}{\mathsf{Var} [R_m]} \\
+            &= \sum_{k=1}^n \omega_k \beta_k
+\end{aligned}
+$$
+
+因此该模型对于**组合资产**仍然成立
+
+$$
+\mathsf{E} [R_i] = R_f + \beta_p (\mathsf{E} [R_m] - R_f)
+$$
+
+> [!tip]
+> - $\sigma$ 作为风险评估标准只能适用于投资组合为 `Efficient Portfolio`
+> - $\beta$ 则适用于所有的投资组合
+
+
+![example](image/CAPM_example.jpg)
+
+> [!note]
+> $\beta$ 并没有估计所有的风险，只考虑了系统风险（不得不承担，且无法摆脱的部分）。因此上述案例的 $\alpha$ 会如此之大
+
+
+## 回归分析
+
+上文已经知道 $\beta$ 只衡量了系统风险，因此将 $\mathsf{E} [R_i]$ 还原为 $R_i$ 
+
+$$
+R_i = R_f + \beta_i (R_m - R_f) + \alpha_i + \epsilon
+$$
+
+- $\alpha_i$ 超额回报率，单个样本因骚操作产生的风险所支付的回报。
+- $\epsilon$ 采样单个样本存在的误差、干扰，这部分噪音在统计分析时被相互抵消
+
+上述公式还可以写为另外一种形式
+
+$$
+\begin{aligned}
+    R_i &= \hat{\alpha}_i + \beta_i R_m  + \alpha_i + \epsilon  \\
+    \hat{\alpha}_i &= R_f (1 - \beta_i)
+\end{aligned}
+$$
+
+**根据这个单样本公式，就能对单只股票的采样值做回归分析，估算出该股票存在的 $\alpha_i$ 应该是多少。** 拟合公式为
+
+$$
+\begin{aligned}
+     y &= R_m x + b  \\
+其中: y &= R_i \\
+     x &= \beta_i \\
+     b &= \hat{\alpha}_i + \alpha
+\end{aligned}
+$$
+
+
+![example](image/CAPM_analysis.jpg)
